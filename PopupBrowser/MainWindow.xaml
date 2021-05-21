@@ -1,0 +1,18 @@
+﻿<Window x:Class="PopupBrowser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PopupBrowser"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d"
+        Icon="pack://application:,,,/PopupBrowser;component/PopupBrowser.ico"
+        Title="PopupBrowser" Height="450" Width="800" Topmost="True" KeyDown="Window_KeyDown" Closing="Window_Closing" Loaded="Window_Loaded" Deactivated="Window_Deactivated">
+    <Window.Effect>
+        <DropShadowEffect/>
+    </Window.Effect>
+    <DockPanel>
+        <TextBox Name="txtSource" Text="{Binding Source, ElementName=webView}"  IsEnabled="False" DockPanel.Dock="Top"/>
+        <wv2:WebView2 Name="webView" NavigationCompleted="webView_NavigationCompleted" />
+    </DockPanel>
+</Window>
