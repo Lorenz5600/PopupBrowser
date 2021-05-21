@@ -13,9 +13,7 @@ using System.Windows;
 
 namespace PopupBrowser
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    
     public partial class App : Application, ISingleInstance
     {
         MainWindow mainWin;
@@ -29,10 +27,11 @@ namespace PopupBrowser
                     options = o;
                 });
 
-            bool AppMutexOwner = this.InitializeAsFirstInstance(options.Name);
+            bool AppMutexOwner = this.InitializeAsFirstInstance($"PopupBrowser_{options.Name}");
 
             if (!AppMutexOwner)
             {
+                Thread.Sleep(500);
                 Current.Shutdown();
             }
             else
@@ -45,14 +44,14 @@ namespace PopupBrowser
 
         public void OnInstanceInvoked(string[] args)
         {
-            Parser.Default.ParseArguments<CommandLineOptions>(args)
+            Parser.Default.ParseArguments<CommandLineOptions>(args[1..])
                 .WithParsed<CommandLineOptions>(o =>
                 {
-                    mainWin.Initialize(o);
+                    mainWin.Dispatcher.Invoke(() => mainWin.Initialize(o));
                 })
                 .WithNotParsed<CommandLineOptions>(missing =>
                 {
-                    mainWin.Initialize(new CommandLineOptions());
+                    mainWin.Dispatcher.Invoke(() => mainWin.Initialize(new CommandLineOptions()));
                 });
 
         }

@@ -1,7 +1,8 @@
 {
   "profiles": {
     "PopupBrowser": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "www.google.de"
     }
   }
 }

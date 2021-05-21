@@ -45,3 +45,7 @@ PopupBrowser.exe www.github.com --Size 400,300 --Style Fixed --Position AtCursor
 <p>Close Window by pressing ESC or clicking outside the window</p>
 <p><strong>-c / --CloseAfter &lt;Seconds&gt; (Default '0')</strong></p>
 <p>Automatically close window after a given time. A value of 0 disables the timer.</p>
+
+## Requirements
+ * .Net 5 Runtime
+ * [Edge WebView2 Runtime](https://developer.microsoft.com/de-de/microsoft-edge/webview2/)

@@ -41,60 +41,62 @@ namespace PopupBrowser
         {
             Options = options;
             UserSettings = new Settings(Options.Name);
-
-            if (Options.Style!=StyleMode.Notification && !OSHelper.OSUsesLightTheme)
+            Title = Options.Name;
+            if (!IsVisible)
             {
-                ThemesController.SetTheme(ThemesController.ThemeTypes.Dark);
-                Style = this.FindResource("CustomWindowStyle") as Style;
+                if (Options.Style != StyleMode.Notification && !OSHelper.OSUsesLightTheme)
+                {
+                    ThemesController.SetTheme(ThemesController.ThemeTypes.Dark);
+                    Style = this.FindResource("CustomWindowStyle") as Style;
+                }
+                #region # Setup Style #
+
+                switch (Options.Style)
+                {
+                    case StyleMode.Window:
+                        ResizeMode = ResizeMode.CanResize;
+                        break;
+                    case StyleMode.Fixed:
+                        ResizeMode = ResizeMode.NoResize;
+                        break;
+                    case StyleMode.Notification:
+                        WindowStyle = WindowStyle.None;
+                        ResizeMode = ResizeMode.NoResize;
+                        break;
+                }
+
+                // ShowAddressBar
+                txtSource.Visibility = (Options.ShowAddressBar) ? Visibility.Visible : Visibility.Collapsed;
+
+                #endregion
+
+                #region # Setup Size & Position #
+
+                this.Width = Options.SizePoint.X;
+                this.Height = Options.SizePoint.Y;
+
+                switch (Options.Position)
+                {
+                    case PositionMode.AtCursor:
+                        WindowStartupLocation = WindowStartupLocation.Manual;
+                        /* continued in Window_Loaded */
+                        break;
+                    case PositionMode.Center:
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                        break;
+                    case PositionMode.Recall:
+                        WindowStartupLocation = WindowStartupLocation.Manual;
+                        if (!UserSettings.IsNew)
+                        {
+                            setSaveWindowPosition(UserSettings.WindowPos, UserSettings.WindowSize);
+                        }
+                        break;
+                }
+
+                #endregion
+
+                Show();
             }
-            #region # Setup Style #
-
-            switch (Options.Style)
-            {
-                case StyleMode.Window:
-                    ResizeMode = ResizeMode.CanResize;
-                    break;
-                case StyleMode.Fixed:
-                    ResizeMode = ResizeMode.NoResize;
-                    break;
-                case StyleMode.Notification:
-                    WindowStyle = WindowStyle.None;
-                    ResizeMode = ResizeMode.NoResize;
-                    break;
-            }
-
-            // ShowAddressBar
-            txtSource.Visibility = (Options.ShowAddressBar) ? Visibility.Visible : Visibility.Collapsed;
-            
-            #endregion
-
-            #region # Setup Size & Position #
-
-            this.Width = Options.SizePoint.X;
-            this.Height = Options.SizePoint.Y;
-
-            switch (Options.Position)
-            {
-                case PositionMode.AtCursor:
-                    WindowStartupLocation = WindowStartupLocation.Manual;
-                    /* continued in Window_Loaded */
-                    break;
-                case PositionMode.Center:
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                    break;
-                case PositionMode.Recall:
-                    WindowStartupLocation = WindowStartupLocation.Manual;
-                    if (!UserSettings.IsNew)
-                    {
-                        setSaveWindowPosition(UserSettings.WindowPos, UserSettings.WindowSize);
-                    }
-                    break;
-            }
-
-            #endregion
-
-            Show();
-
             #region # Launch URL #
             await webView.EnsureCoreWebView2Async();
             
@@ -167,9 +169,12 @@ namespace PopupBrowser
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var p = OSHelper.GetScreenCursor(this);
-            p.Offset(Options.OffsetPoint.X, Options.OffsetPoint.Y);
-            setSaveWindowPosition(p, new Size(Width, Height));
+            if (Options.Position == PositionMode.AtCursor)
+            {
+                var p = OSHelper.GetScreenCursor(this);
+                p.Offset(Options.OffsetPoint.X, Options.OffsetPoint.Y);
+                setSaveWindowPosition(p, new Size(Width, Height));
+            }
         }
 
         

@@ -48,8 +48,8 @@ namespace PopupBrowser
         [Option('c', "CloseAfter", Default = (int)0)]
         public int CloseAfter { get; set; } = 0;
         
-        [Option('e',"EasyClose", Default = (bool)true)]
-        public bool EasyClose { get; set; } = true;
+        [Option('e',"EasyClose", Default = (bool)false)]
+        public bool EasyClose { get; set; } = false;
 
         public Point SizePoint => strToPoint(Size);
 
